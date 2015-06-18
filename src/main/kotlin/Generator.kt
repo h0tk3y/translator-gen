@@ -12,7 +12,6 @@ import UserGrammar
 import UserGrammarBaseVisitor
 import UserGrammarLexer
 import UserGrammarParser
-import UserGrammarParser.RangeLiteralContext
 import after
 import extractUserGrammar
 import getFirstFollow
@@ -98,16 +97,11 @@ fun extractUserGrammar(input: String): UserGrammar {
                 rules add
                         Rule(leftPart,
                                 when {
-                                    b.literal() != null -> b.literal().let {
-                                        listOf(if (it is RangeLiteralContext)
-                                            FromToChars(it.strChar(0).getText()[0], it.strChar(1).getText()[0]) else
-                                            Literal(it.getText())
-                                        )
-                                    }
+                                    b.literal() != null -> listOf(Literal(b.literal().getText()))
                                     b.ID() != null -> b.ID() map { Lexeme(it.getText()) }
                                     else -> emptyList<Lexeme>()
                                 },
-                                b.block()?.str()?.getText())
+                                b.block()?.getText()?.let { it.substring(1, it.length() - 2) })
             }
         }
     })
@@ -301,7 +295,7 @@ fun parserCode(g: UserGrammar, first: Map<Lexeme, Set<Lexeme>>, follow: Map<Lexe
                     }
                     if (firstByRule filterKeys { it.leftPart == nt } any { it.value.isEmpty() }) {
                         writeln("${follow[nt]!!.joinToString(", ")} -> {")
-                        val rule = g.rules[nt]!!.first { it.isEpsilonRule}
+                        val rule = g.rules[nt]!!.first { it.isEpsilonRule }
                         if (rule.code != null)
                             indented { writeln(rule.code) }
                         writeln("}")

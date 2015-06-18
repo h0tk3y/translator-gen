@@ -15,7 +15,7 @@ t returns [Int v]
 
 d returns [Int? v]
     : MULT f d { v = 1#v * (2#v ?: 1); }
-    |
+    | { v = 1; }
     ;
 
 f returns [Int v]
@@ -27,4 +27,5 @@ PLUS: '+';
 MULT: '*';
 LBR: '(';
 RBR: ')';
-N: ('0'..'9')+;
+N: '0'..'9';
+

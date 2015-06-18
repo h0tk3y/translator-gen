@@ -16,9 +16,9 @@ public class GeneratedCodeTests {
     }
 
     test fun arithmetic() {
-        val lexer = ArithmLexer(ANTLRInputStream("2+2*2+(3*3*3)+1"))
+        val lexer = ArithmLexer(ANTLRInputStream("20+2*2+(3*3*3)+1"))
         val translator = ArithmTranslator(lexer)
         val t = translator.start()
-        assertEquals(34, t.attrs["v"])
+        assertEquals(52, t.attrs["v"])
     }
 }

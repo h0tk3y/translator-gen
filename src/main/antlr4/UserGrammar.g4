@@ -18,22 +18,30 @@ oneReturn
 
 body: literal block?
     | ID+ block?
-    |
+    | block?
     ;
 
 literal
     : APO str APO                               #stringLiteral
     | APO strChar APO                           #charLiteral
     | APO strChar APO DOT DOT APO strChar APO   #rangeLiteral
-    | LBR literal RBR (AST | PLUS)              #nfLiteral
-    | literal OR literal                        #orLiteral
     ;
 
 block
-    : LCU str RCU;
+    : ACTION;
 
 str: ~('\r' | '\n' | '"' | '\'') (~('\r' | '\n' | '"' | '\''))+?;
 strChar: (~('\r' | '\n' | '"' | '\'')|':');
+
+ACTION
+	:	'{'
+		(	ACTION
+        |	'/*' .*? '*/' // ('*/' | EOF)
+        |	'//' ~[\r\n]*
+        |	.
+		)*?
+		('}'|EOF)
+	;
 
 GRAMMAR: 'grammar';
 
@@ -42,11 +50,6 @@ OR: '|';
 SEMI: ';';
 APO: '\'';
 DOT: '.';
-
-LBR: '(';
-RBR: ')';
-AST: '*';
-PLUS: '+';
 
 LCU: '{';
 RCU: '}';
