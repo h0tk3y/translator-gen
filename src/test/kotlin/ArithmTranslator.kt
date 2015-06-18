@@ -25,7 +25,7 @@ public class ArithmTranslator(val lexer: ArithmLexer) {
             LBR, N -> {
                 result.children add f()
                 result.children add d()
-                 v = (result.children[0].attrs["v"] as Int) * ((result.children[1].attrs["v"] as Int?) ?: 1);
+                v = (result.children[0].attrs["v"] as Int) * (result.children[1].attrs["v"] as Int);
             }
             else -> throw RuntimeException("Unexpected token.")
         }
@@ -35,7 +35,7 @@ public class ArithmTranslator(val lexer: ArithmLexer) {
     
     fun d(): ArithmNode {
         val result = ArithmNode("d")
-        var v: Int?? = null
+        var v: Int? = null
         when (curToken.getType()) {
             MULT -> {
                 val child0 = ArithmNode(consume(ArithmLexer.MULT))
@@ -43,10 +43,10 @@ public class ArithmTranslator(val lexer: ArithmLexer) {
                 result addChild child0
                 result.children add f()
                 result.children add d()
-                 v = (result.children[1].attrs["v"] as Int) * ((result.children[2].attrs["v"] as Int?) ?: 1);
+                v = (result.children[1].attrs["v"] as Int) * (result.children[2].attrs["v"] as Int);
             }
             RBR, Token.EOF, PLUS -> {
-                 v = 1;
+                v = 1;
             }
             else -> throw RuntimeException("Unexpected token.")
         }
@@ -56,7 +56,7 @@ public class ArithmTranslator(val lexer: ArithmLexer) {
     
     fun e(): ArithmNode {
         val result = ArithmNode("e")
-        var v: Int?? = null
+        var v: Int? = null
         when (curToken.getType()) {
             PLUS -> {
                 val child0 = ArithmNode(consume(ArithmLexer.PLUS))
@@ -64,9 +64,10 @@ public class ArithmTranslator(val lexer: ArithmLexer) {
                 result addChild child0
                 result.children add t()
                 result.children add e()
-                 v = (result.children[1].attrs["v"] as Int) + ((result.children[2].attrs["v"] as Int?) ?: 0);
+                v = (result.children[1].attrs["v"] as Int) + (result.children[2].attrs["v"] as Int);
             }
             RBR, Token.EOF -> {
+                v = 0;
             }
             else -> throw RuntimeException("Unexpected token.")
         }
@@ -82,7 +83,7 @@ public class ArithmTranslator(val lexer: ArithmLexer) {
                 val child0 = ArithmNode(consume(ArithmLexer.N))
                 child0.attrs["text"] = child0.name
                 result addChild child0
-                 v = (result.children[0].attrs["text"] as String).toInt();
+                v = (result.children[0].attrs["text"] as String).toInt();
             }
             LBR -> {
                 val child0 = ArithmNode(consume(ArithmLexer.LBR))
@@ -92,7 +93,7 @@ public class ArithmTranslator(val lexer: ArithmLexer) {
                 val child1 = ArithmNode(consume(ArithmLexer.RBR))
                 child1.attrs["text"] = child1.name
                 result addChild child1
-                 v = (result.children[1].attrs["v"] as Int);
+                v = (result.children[1].attrs["v"] as Int);
             }
             else -> throw RuntimeException("Unexpected token.")
         }
@@ -107,7 +108,7 @@ public class ArithmTranslator(val lexer: ArithmLexer) {
             LBR, N -> {
                 result.children add t()
                 result.children add e()
-                 v = (result.children[0].attrs["v"] as Int) + ((result.children[1].attrs["v"] as Int?) ?: 0);
+                v = (result.children[0].attrs["v"] as Int) + (result.children[1].attrs["v"] as Int);
             }
             else -> throw RuntimeException("Unexpected token.")
         }

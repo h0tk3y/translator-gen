@@ -101,7 +101,7 @@ fun extractUserGrammar(input: String): UserGrammar {
                                     b.ID() != null -> b.ID() map { Lexeme(it.getText()) }
                                     else -> emptyList<Lexeme>()
                                 },
-                                b.block()?.getText()?.let { it.substring(1, it.length() - 2) })
+                                b.block()?.getText()?.let { it.substring(1, it.length() - 2).trim() })
             }
         }
     })

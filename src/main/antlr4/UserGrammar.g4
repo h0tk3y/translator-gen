@@ -22,9 +22,12 @@ body: literal block?
     ;
 
 literal
-    : APO str APO                               #stringLiteral
-    | APO strChar APO                           #charLiteral
-    | APO strChar APO DOT DOT APO strChar APO   #rangeLiteral
+    : literal (PLUS|AST|QUE)+ #quantLit
+    | literal OR literal       #orLit
+    | LPAREN literal RPAREN   #parensLit
+    | APO str APO             #stringLit
+    | APO strChar APO         #charLit
+    | APO ANYCHAR APO DOT DOT APO ANYCHAR APO #rangeLit
     ;
 
 block
@@ -53,6 +56,13 @@ DOT: '.';
 
 LCU: '{';
 RCU: '}';
+
+LPAREN: '(';
+RPAREN: ')';
+
+PLUS: '+';
+AST: '*';
+QUE: '?';
 
 LSQ: '[';
 RSQ: ']';

@@ -9,16 +9,17 @@ import org.junit.Test as test
 
 public class GeneratedCodeTests {
     test fun regex() {
-        val lexer = RegexLexer(ANTLRInputStream("ab*c|de(fg*h)xx*"))
+        val lexer = RegexLexer(ANTLRInputStream("ab*c|de(fg*h)xx*|s"))
         val translator = RegexTranslator(lexer)
         val t = translator.start()
-        assertEquals(16, t.attrs["a"] as Int)
+        assertEquals(18, t.attrs["a"] as Int)
     }
 
     test fun arithmetic() {
-        val lexer = ArithmLexer(ANTLRInputStream("20+2*2+(3*3*3)+1"))
+        val lexer = ArithmLexer(ANTLRInputStream("20+2*2+(3*3*3)+10"))
         val translator = ArithmTranslator(lexer)
+        assertEquals("20", lexer._token.getText())
         val t = translator.start()
-        assertEquals(52, t.attrs["v"])
+        assertEquals(61, t.attrs["v"])
     }
 }
