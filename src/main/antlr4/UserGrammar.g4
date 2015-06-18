@@ -5,11 +5,19 @@ grammarSpec
     ;
 
 ruleSpec
-    : ID COLON body (OR body)* SEMI
+    : ID returnsSpec? COLON body (OR body)* SEMI
     ;
 
-body: literal
-    | ID+
+returnsSpec
+    : RETURNS LSQ oneReturn ( COMMA oneReturn )* RSQ
+    ;
+
+oneReturn
+    : type=ID name=ID
+    ;
+
+body: literal block?
+    | ID+ block?
     |
     ;
 
@@ -17,9 +25,14 @@ literal
     : APO str APO                               #stringLiteral
     | APO strChar APO                           #charLiteral
     | APO strChar APO DOT DOT APO strChar APO   #rangeLiteral
+    | LBR literal RBR (AST | PLUS)              #nfLiteral
+    | literal OR literal                        #orLiteral
     ;
 
-str: (~('\r' | '\n' | '"' | '\'')|':') (~('\r' | '\n' | '"' | '\'')|':')+?;
+block
+    : LCU str RCU;
+
+str: ~('\r' | '\n' | '"' | '\'') (~('\r' | '\n' | '"' | '\''))+?;
 strChar: (~('\r' | '\n' | '"' | '\'')|':');
 
 GRAMMAR: 'grammar';
@@ -30,7 +43,21 @@ SEMI: ';';
 APO: '\'';
 DOT: '.';
 
-ID: ('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'0'..'9'|'_')*;
+LBR: '(';
+RBR: ')';
+AST: '*';
+PLUS: '+';
+
+LCU: '{';
+RCU: '}';
+
+LSQ: '[';
+RSQ: ']';
+RETURNS: 'returns';
+ASG: '=';
+COMMA: ',';
+
+ID: ('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'0'..'9'|'_'|'?')*;
 
 RE: '\r' -> skip;
 BR: '\n' -> skip;
